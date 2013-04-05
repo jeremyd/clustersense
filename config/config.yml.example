@@ -1,0 +1,4 @@
+node_id: homebase
+node_ip: 10.8.0.1
+port: '4001'
+registry_host: 10.8.0.1

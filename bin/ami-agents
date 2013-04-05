@@ -1,0 +1,56 @@
+#!/usr/bin/ruby
+# -jruby: , 1.7.3 has problems, also has no stderr support for IO.popen-
+#!/usr/bin/jruby
+
+# if running direct from checkout load the local ami-agents libs first
+#locallib = File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+#$LOAD_PATH.unshift locallib if File.exists? locallib
+require 'pry'
+
+vendorlib = File.expand_path(File.join(File.dirname(File.realpath(__FILE__)), "..", "bundle", "bundler", "setup.rb"))
+hardvendor = "/usr/lib/ami-agents-git/bundle/bundler/setup.rb"
+puts "vendorlib was #{vendorlib}"
+if File.exists?(vendorlib)
+  require vendorlib
+elsif File.exists?(hardvendor)
+  puts "luckily we have a hardcoded vendor directory for archlinux #{hardvendor}, requiring."
+  require hardvendor
+else
+  puts "FATAL: you must run bundle install --standalone; or could not find the vendor directory #{vendorlib}"
+  exit 1
+end
+
+require 'ami-agents'
+
+@trollop_options = Trollop::options do
+  opt :list, "List available ami-agents.", :default => false
+  opt :agent, "Name of ami-agent to startup.", :type => :string, :default => nil 
+  opt :config, "Name of config file.yml located *in the config directory. (relative name)", :type => :string, :default => nil 
+end
+
+if @trollop_options[:list]
+# do the list and exit
+  paths = Dir.glob("#{AmiAgents::AGENTS_DIR}/**/*.rb")
+  strip_names = paths.collect do |path|
+    p = File.basename(path)
+    p.gsub(/\.rb/,"")
+  end
+  say "The following ami-agents are available:"
+  strip_names.reject! { |r| r == "version" }
+  puts strip_names
+  exit 0
+end
+
+@config_file = @trollop_options[:config] || "config.yml"
+
+Trollop::die("--agent <name> must be specified!") unless @trollop_options[:agent]
+
+begin
+  require "ami-agents/#{@trollop_options[:agent]}"
+rescue => e
+  puts e.backtrace if e.respond_to?(:backtrace)
+  Trollop::die("Failed to load #{@trollop_options[:agent]} with error: #{e}")
+end
+
+say "#{@trollop_options[:agent]} starting."
+sleep

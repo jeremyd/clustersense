@@ -1,0 +1,15 @@
+[Unit]
+Description=Ami Agent %i
+Documentation=http://github.com/jeremyd/ami-agents
+After=local-fs.target network.target redis.service
+Requires=network.target redis.service
+Wants=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ami-agents --agent %i --config %i.yml
+KillSignal=SIGKILL
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target

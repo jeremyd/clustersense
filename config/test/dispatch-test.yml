@@ -1,0 +1,5 @@
+node_id: dispatch-test
+node_ip: 127.0.0.1
+port: '4000'
+registry_host: 127.0.0.1
+homebase_region: us-east-1
