@@ -1,0 +1,5 @@
+[gerrit]
+host=git.clustersense.com
+port=29418
+project=ami-agents
+defaultbranch=master

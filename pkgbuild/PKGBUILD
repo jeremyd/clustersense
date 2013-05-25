@@ -8,15 +8,16 @@
 
 # Maintainer: Your Name <youremail@domain.com>
 pkgname=ami-agents-git
-pkgver=20130119
+pkgver=20130508
 pkgrel=1
 pkgdesc="ami-agents"
 arch=(x86_64)
 url="http://github.com/jeremyd"
 license=('GPL')
 groups=()
-depends=('jruby redis openvpn zeromq libxml2 libxslt lsb-release')
-makedepends=('git rsync jruby ruby zeromq libxml2 libxslt')
+depends=(jruby redis openvpn zeromq libxml2 libxslt lsb-release)
+# TODO: requires bundler > 1.3.0
+makedepends=(git rsync jruby ruby zeromq libxml2 libxslt)
 provides=()
 conflicts=()
 replaces=()
@@ -27,7 +28,7 @@ source=()
 noextract=()
 md5sums=() #generate with 'makepkg -g'
 
-_gitroot=jeremy@err.myl33tbox.com:gits/ami-agents
+_gitroot=http://git.clustersense.com:29443/ami-agents/
 _gitname=ami-agents
 
 build() {
@@ -46,8 +47,8 @@ build() {
 }
 
 package() {
-  jruby -S gem install bundler
-  gem install bundler --no-user
+  #jruby -S gem install bundler
+  #gem install bundler --no-user
   mkdir -p "$pkgdir/usr/bin"
   mkdir -p "$pkgdir/usr/lib/systemd/system"
   mkdir -p "$pkgdir/etc/ami-agents"
