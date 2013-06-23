@@ -161,7 +161,7 @@ class WebServer < Reel::Server
     if request.url == "/"
       return render_index(connection)
     end
-    if request.url == "/ami-agents.js"
+    if request.url == "/clustersense.js"
       return render_ami_agents_js(connection)
     end
     if request.url =~ /\/sprites\/(.+)/
@@ -200,8 +200,8 @@ class WebServer < Reel::Server
   end
 
   def render_ami_agents_js(connection)
-    info "200 OK: /ami-agents.js"
-    connection.respond(:ok, File.read(File.join(AmiAgents::config_dir, "..", "js", "ami-agents.js")))
+    info "200 OK: /clustersense.js"
+    connection.respond(:ok, File.read(File.join(AmiAgents::config_dir, "..", "js", "clustersense.js")))
   end
 
   def render_index(connection)

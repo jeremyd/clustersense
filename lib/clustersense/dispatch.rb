@@ -1,5 +1,5 @@
-require 'ami-agents'
-require 'ami-agents/helpers/easyrsa'
+require 'clustersense'
+require 'clustersense/helpers/easyrsa'
 require 'aws-sdk'
 require 'fileutils'
 require 'pry'
@@ -230,7 +230,7 @@ def basic_cell_menu(node_id)
 
     menu.choice(HighLine.color("infect - upload and exec new gem code", :actions)) do
       # just give it a url, and jockey reelweb/apache to send it
-      DCell::Node[node_id][:basic].infect!("http://10.8.0.6:8090/ami-agents-0.0.1.gem")
+      DCell::Node[node_id][:basic].infect!("http://10.8.0.6:8090/clustersense-0.0.1.gem")
       say(HighLine.color("success: node infected!", :urgent))
       basic_cell_menu(node_id)
     end

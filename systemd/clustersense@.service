@@ -1,13 +1,13 @@
 [Unit]
-Description=Ami Agent %i
-Documentation=http://github.com/jeremyd/ami-agents
+Description=Cluster Sense %i
+Documentation=http://github.com/jeremyd/clustersense
 After=local-fs.target network.target redis.service
 Requires=network.target redis.service
 Wants=local-fs.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/ami-agents --agent %i --config %i.yml
+ExecStart=/usr/bin/clustersense --agent %i --config %i.yml
 KillSignal=SIGKILL
 StandardOutput=syslog
 

@@ -1,4 +1,4 @@
-require 'ami-agents/version'
+require 'clustersense/version'
 require 'celluloid/autostart'
 require 'dcell'
 require 'trollop'

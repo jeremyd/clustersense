@@ -10,5 +10,4 @@ gem 'ffi-rzmq', :git => 'git://github.com/chuckremes/ffi-rzmq.git'
 
 gem 'jruby-openssl', :platform => :jruby
 
-# Specify your gem's dependencies in ami-agents.gemspec
 gemspec

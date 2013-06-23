@@ -2,13 +2,13 @@
 # -jruby: , 1.7.3 has problems, also has no stderr support for IO.popen-
 #!/usr/bin/jruby
 
-# if running direct from checkout load the local ami-agents libs first
+# if running direct from checkout load the local clustersense libs first
 #locallib = File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 #$LOAD_PATH.unshift locallib if File.exists? locallib
 require 'pry'
 
 vendorlib = File.expand_path(File.join(File.dirname(File.realpath(__FILE__)), "..", "bundle", "bundler", "setup.rb"))
-hardvendor = "/usr/lib/ami-agents-git/bundle/bundler/setup.rb"
+hardvendor = "/usr/lib/clustersense-git/bundle/bundler/setup.rb"
 puts "vendorlib was #{vendorlib}"
 if File.exists?(vendorlib)
   require vendorlib
@@ -20,10 +20,10 @@ else
   exit 1
 end
 
-require 'ami-agents'
+require 'clustersense'
 
 @trollop_options = Trollop::options do
-  opt :list, "List available ami-agents.", :default => false
+  opt :list, "List available clustersense.", :default => false
   opt :agent, "Name of ami-agent to startup.", :type => :string, :default => nil 
   opt :config, "Name of config file.yml located *in the config directory. (relative name)", :type => :string, :default => nil 
 end
@@ -35,7 +35,7 @@ if @trollop_options[:list]
     p = File.basename(path)
     p.gsub(/\.rb/,"")
   end
-  say "The following ami-agents are available:"
+  say "The following clustersense are available:"
   strip_names.reject! { |r| r == "version" }
   puts strip_names
   exit 0
@@ -46,7 +46,7 @@ end
 Trollop::die("--agent <name> must be specified!") unless @trollop_options[:agent]
 
 begin
-  require "ami-agents/#{@trollop_options[:agent]}"
+  require "clustersense/#{@trollop_options[:agent]}"
 rescue => e
   puts e.backtrace if e.respond_to?(:backtrace)
   Trollop::die("Failed to load #{@trollop_options[:agent]} with error: #{e}")

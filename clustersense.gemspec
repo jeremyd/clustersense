@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
-  s.name = "ami-agents"
+  s.name = "clustersense"
   s.version = "0.0.1"
-  s.summary = "ami-agents"
+  s.summary = "clustersense"
   s.authors = [ "Jeremy Deininger" ]
   s.email = [ "jeremydeininger@gmail.com" ]
-  s.executables = ["ami-agents"]
+  s.executables = ["clustersense"]
   s.bindir = "bin"
   s.files = Dir.glob("lib/**/*.rb") + \
     Dir.glob("test/**/*.rb") + \

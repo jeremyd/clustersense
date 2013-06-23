@@ -6,7 +6,7 @@ module AmiAgents
   end
 
   def self.system_wide_conf
-    "/etc/ami-agents"
+    "/etc/clustersense"
   end
 
   def self.config(config_file = "config.yml")

@@ -1,6 +1,6 @@
-require 'ami-agents'
-require 'ami-agents/helpers/wizards'
-require 'ami-agents/helpers/easyrsa'
+require 'clustersense'
+require 'clustersense/helpers/wizards'
+require 'clustersense/helpers/easyrsa'
 require 'aws-sdk'
 
 unless ENV['AWS_SECRET_KEY'] && ENV['AWS_ACCESS_KEY']

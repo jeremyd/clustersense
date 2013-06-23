@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 vendorlib = File.expand_path(File.join(File.dirname(File.realpath(__FILE__)), "..", "bundle", "bundler", "setup.rb"))
-hardvendor = "/usr/lib/ami-agents-git/bundle/bundler/setup.rb"
+hardvendor = "/usr/lib/clustersense-git/bundle/bundler/setup.rb"
 puts "vendorlib was #{vendorlib}"
 if File.exists?(vendorlib)
   require vendorlib
@@ -13,18 +13,18 @@ else
   exit 1
 end
 
-require 'ami-agents'
+require 'clustersense'
 
 @trollop_options = {}
 #@trollop_options[:config] = "test/homebase-test.yml"
-#require 'ami-agents/basic'
+#require 'clustersense/basic'
 #sleep 2
 
 @trollop_options[:config] = "test/reelweb-test.yml"
-require 'ami-agents/reelweb'
+require 'clustersense/reelweb'
 sleep 2
 @trollop_options[:config] = "test/create-image-test.yml"
-require 'ami-agents/create_image_wizard'
+require 'clustersense/create_image_wizard'
 
 #DCell::Node[config["node_id"]][:time_server].add_wizard(DCell.me.id, "<h1>HI YO, I CAN HAS WISARD?</h1>", "/poormancrypto")
 say "agents started"

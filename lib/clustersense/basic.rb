@@ -53,13 +53,13 @@ class Basic
     result = ""
     # TODO: do a self update and restart ..
     # 1) install the payload somewhere (gems?)
-    #tmpgem = File.join(Dir.tmpdir, "ami-agents-0.0.1.gem") 
+    #tmpgem = File.join(Dir.tmpdir, "clustersense-0.0.1.gem") 
     #exec("curl -o #{tmpgem} #{new_code}")
-    #exec("mkdir -p /etc/ami-agents")
-    #exec("cp /usr/lib/ruby/gems/1.9.1/gems/ami-agents-0.0.1/config/config.yml /etc/ami-agents/config.yml")
+    #exec("mkdir -p /etc/clustersense")
+    #exec("cp /usr/lib/ruby/gems/1.9.1/gems/clustersense-0.0.1/config/config.yml /etc/clustersense/config.yml")
     #exec("gem install #{tmpgem} --no-user")
-    #exec("cp /etc/ami-agents/config.yml /usr/lib/ruby/gems/1.9.1/gems/ami-agents-0.0.1/config/config.yml")
-    #exec("systemctl restart ami-agents")
+    #exec("cp /etc/clustersense/config.yml /usr/lib/ruby/gems/1.9.1/gems/clustersense-0.0.1/config/config.yml")
+    #exec("systemctl restart clustersense")
     #exit(0)
     # 2) engineer new dcell service via systemd, and start it.
     # 3) dispatch checks the new cell is online
@@ -111,7 +111,7 @@ class Basic
   # This method accepts any script payload with a shebang line.
   # Also accepts optional environment hash that will be turned into local environment variables for the script to access.
   def exec(sender_id, script, environment = {})
-    @cache_path ||= "/var/cache/ami-agents/exec"
+    @cache_path ||= "/var/cache/clustersense/exec"
     FileUtils.mkdir_p(@cache_path)
     datetimestring = Time.now.strftime("%Y%m%d-%H%M-%L")
 

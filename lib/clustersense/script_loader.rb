@@ -1,5 +1,5 @@
-require 'ami-agents'
-require 'ami-agents/easyrsa'
+require 'clustersense'
+require 'clustersense/easyrsa'
 require 'aws-sdk'
 require 'fileutils'
 

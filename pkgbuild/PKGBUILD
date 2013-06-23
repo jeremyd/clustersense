@@ -7,12 +7,12 @@
 # for more information on packaging from GIT sources.
 
 # Maintainer: Your Name <youremail@domain.com>
-pkgname=ami-agents-git
+pkgname=clustersense-git
 pkgver=20130508
 pkgrel=1
-pkgdesc="ami-agents"
+pkgdesc="clustersense"
 arch=(x86_64)
-url="http://github.com/jeremyd"
+url="http://github.com/jeremyd/clustersense"
 license=('GPL')
 groups=()
 depends=(jruby redis openvpn zeromq libxml2 libxslt lsb-release)
@@ -28,8 +28,8 @@ source=()
 noextract=()
 md5sums=() #generate with 'makepkg -g'
 
-_gitroot=http://git.clustersense.com:29443/ami-agents/
-_gitname=ami-agents
+_gitroot=https://github.com/jeremyd/clustersense
+_gitname=clustersense
 
 build() {
   cd "$srcdir"
@@ -51,17 +51,17 @@ package() {
   #gem install bundler --no-user
   mkdir -p "$pkgdir/usr/bin"
   mkdir -p "$pkgdir/usr/lib/systemd/system"
-  mkdir -p "$pkgdir/etc/ami-agents"
+  mkdir -p "$pkgdir/etc/clustersense"
   rsync -vr --exclude=.git "$srcdir/$_gitname/" "/$pkgdir/usr/lib/$pkgname/"
   cd $pkgdir/usr/lib/$pkgname
   jruby -S bundle install --standalone
   bundle install --standalone
   cd "$pkgdir/usr/bin/"
-  ln -s ../lib/$pkgname/bin/ami-agents ami-agents
+  ln -s ../lib/$pkgname/bin/clustersense clustersense
 # systemd service must be a file and not a link
   cd "$pkgdir/usr/lib/systemd/system"
-  cp ../../$pkgname/systemd/ami-agents@.service ami-agents@.service
-  cd "$pkgdir/etc/ami-agents"
+  cp ../../$pkgname/systemd/clustersense@.service clustersense@.service
+  cd "$pkgdir/etc/clustersense"
   ln -s ../../usr/lib/$pkgname/config/config.yml.example config.yml.example
 }
 
