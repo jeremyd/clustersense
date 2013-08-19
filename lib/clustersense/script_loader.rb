@@ -18,7 +18,7 @@ class ScriptLoader
   end
 end
 
-config = AmiAgents::config(@@config_file)
+config = Clustersense::config(@@config_file)
 DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
 
 ScriptLoader.supervise_as :script_dispatch

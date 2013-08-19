@@ -23,12 +23,12 @@ class AwsMenus
   include Celluloid
 
   def initialize
-    @config = AmiAgents::config(@@config_file)
+    @config = Clustersense::config(@@config_file)
     @ec2 = AWS::EC2.new()
   end
 
   def scripts_menu(node_id, chroot=false)
-    script_payloads_dir = File.join(AmiAgents::config_dir, "..", "script_payloads")
+    script_payloads_dir = File.join(Clustersense::config_dir, "..", "script_payloads")
     available_scripts = Dir.glob(File.join(script_payloads_dir, "*"))
     choose do |menu|
       say "<%= color('Pick a script to execute:', :headline) %>"
@@ -128,7 +128,7 @@ class AwsMenus
   end
 
   def ec2strap(devicesuffix, mount)
-    image_build_script_file = File.join(AmiAgents::config_dir, "..", "script_payloads", "ec2strap")
+    image_build_script_file = File.join(Clustersense::config_dir, "..", "script_payloads", "ec2strap")
     say "Bootstrap AMI using Archlinux install tools"
     DCell::Node["homebase"][:basic].async.exec(DCell.me.id, ::IO.read(image_build_script_file), {"DEST_DIR" => "/mnt/ebs"})
     while(1)
@@ -212,7 +212,7 @@ class AwsMenus
 
 end
 
-config = AmiAgents::config(@@config_file)
+config = Clustersense::config(@@config_file)
 DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
 
 AwsMenus.supervise_as :ping

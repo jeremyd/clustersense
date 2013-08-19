@@ -73,7 +73,7 @@ class AwsMenus
   end
 
   def scripts_menu(node_id, chroot=false)
-    script_payloads_dir = File.join(AmiAgents::config_dir, "..", "script_payloads")
+    script_payloads_dir = File.join(Clustersense::config_dir, "..", "script_payloads")
     available_scripts = Dir.glob(File.join(script_payloads_dir, "*"))
     choices("Pick a script from your war chest.", available_scripts) do |choice|
       userlog "*** Executing #{choice} on #{node_id} ***"
@@ -230,7 +230,7 @@ class AwsMenus
 end
 
 config_file = @trollop_options[:config]
-config = AmiAgents::config(config_file)
+config = Clustersense::config(config_file)
 DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
 
 AwsMenus.supervise_as :ping

@@ -154,7 +154,7 @@ class Basic
 end
 
 config_file = @trollop_options[:config] || "config.yml"
-config = AmiAgents::config(config_file)
+config = Clustersense::config(config_file)
 DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
 
 Basic.supervise_as :basic

@@ -1,4 +1,4 @@
-module AmiAgents
+module Clustersense
   VERSION = "0.0.1"
   AGENTS_DIR = File.expand_path(File.join(File.dirname(__FILE__)))
   def self.config_dir

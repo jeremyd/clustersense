@@ -30,7 +30,7 @@ end
 
 if @trollop_options[:list]
 # do the list and exit
-  paths = Dir.glob("#{AmiAgents::AGENTS_DIR}/**/*.rb")
+  paths = Dir.glob("#{Clustersense::AGENTS_DIR}/**/*.rb")
   strip_names = paths.collect do |path|
     p = File.basename(path)
     p.gsub(/\.rb/,"")

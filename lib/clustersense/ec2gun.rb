@@ -49,7 +49,7 @@ class Ec2Gun
 end
 
 config_file = @trollop_options[:config]
-config = AmiAgents::config(config_file)
+config = Clustersense::config(config_file)
 DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
 
 Ec2Gun.supervise_as :ping

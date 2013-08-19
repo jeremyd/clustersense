@@ -1,5 +1,5 @@
 WRITE_MIME="python2 ~/recent_projects/cloud-utils/bin/write-mime-multipart"
-USER_DATA_SCRIPTS=File.expand_path(File.join(AmiAgents::AGENTS_DIR, ".." ,"..", "user-data"))
+USER_DATA_SCRIPTS=File.expand_path(File.join(Clustersense::AGENTS_DIR, ".." ,"..", "user-data"))
 USER_DATA_TMP="/tmp/user-data.txt"
 
 class EasyRSA

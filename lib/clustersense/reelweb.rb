@@ -177,7 +177,7 @@ class WebServer < Reel::Server
   end
 
   def render_static_asset(connection, static_path)
-    static_file = File.join(AmiAgents::config_dir, "..", "static_assets", static_path)
+    static_file = File.join(Clustersense::config_dir, "..", "static_assets", static_path)
     puts "finding static file: #{static_file}"
     if File.exists?(static_file)
       connection.respond(:ok, File.read(static_file))
@@ -196,22 +196,22 @@ class WebServer < Reel::Server
   end
 
   def render_sprite(connection, spritename)
-    connection.respond(:ok, File.read(File.join(AmiAgents::config_dir, "..", "sprites", spritename)))
+    connection.respond(:ok, File.read(File.join(Clustersense::config_dir, "..", "sprites", spritename)))
   end
 
   def render_ami_agents_js(connection)
     info "200 OK: /clustersense.js"
-    connection.respond(:ok, File.read(File.join(AmiAgents::config_dir, "..", "js", "clustersense.js")))
+    connection.respond(:ok, File.read(File.join(Clustersense::config_dir, "..", "js", "clustersense.js")))
   end
 
   def render_index(connection)
     info "200 OK: /"
-    connection.respond(:ok, File.read(File.join(AmiAgents::config_dir, "..", "static_assets", "html", "index.html")))
+    connection.respond(:ok, File.read(File.join(Clustersense::config_dir, "..", "static_assets", "html", "index.html")))
   end
 end
 
 config_file = @trollop_options[:config] || "config.yml"
-config = AmiAgents::config(config_file)
+config = Clustersense::config(config_file)
 
 DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
 

@@ -72,7 +72,7 @@ class DispatchBootstrap
   end
 
   def initialize(config_file)
-    config = AmiAgents::config(config_file)
+    config = Clustersense::config(config_file)
     ec2 = AWS::EC2.new()
     if config["homebase_region"]
       @homebase_region = config["homebase_region"]
@@ -160,7 +160,7 @@ end
 
 config_file = @trollop_options[:config]
 DispatchBootstrap.new(config_file)
-config = AmiAgents::config(config_file)
+config = Clustersense::config(config_file)
 DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
 
 Dispatch.supervise_as :dispatch
