@@ -2,7 +2,7 @@ module Wizards
   # CALLBACKS
   def ping(sender_id, message)
     puts("#{message} from #{sender_id}")
-    userlog(message)
+    userlog("#{sender_id}: #{message}")
   end
 
   def userlog(message)
@@ -21,6 +21,7 @@ module Wizards
         puts "no callback found for #{response_uuid}"
       end
     end
+    true
   end
 
   # MENUING VIA BOOTSTRAP
@@ -102,6 +103,7 @@ module Wizards
               </script>
 EOF
     DCell::Node["reelweb"][:time_server].async.add_wizard(DCell.me.id, html, menu_uuid)
+    true
   end
 
   # show a button menu of choices
@@ -180,6 +182,7 @@ EOF
     full_html = html_header + html_choices + the_js
 
     DCell::Node["reelweb"][:time_server].async.add_wizard(DCell.me.id, full_html, menu_uuid)
+    true
   end
 
 # TODO: needs work
@@ -236,5 +239,6 @@ EOF
               </script>
 EOF
     DCell::Node["reelweb"][:time_server].async.add_wizard(DCell.me.id, html, menu_uuid)
+    true
   end
 end

@@ -1,0 +1,4 @@
+node_id: app3
+node_ip: 127.0.0.1
+port: '5003'
+registry_host: 127.0.0.1
