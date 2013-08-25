@@ -9,24 +9,11 @@ class TimeServer
     @message_list ||= []
     @wizards ||= []
     gen = { "nodes" => [], "messages" => @message_list, "payloads" => @payload_list, "wizards" => @wizards }
-    # grab the next wizard
     nodelist.each_with_index do |n,index|
-      x = (40 + (index*100))
-      if(((index+1) % 2) == 1)
-        y = 50;
-      else 
-        y = 50;
-      end
-      xx = (x + 50)
-      yy = (y + 50)
       gen["nodes"] << {
         "id" => n.id,
         "addr" => n.addr,
-        "state" => n.state.to_s,
-        "x" => x,
-        "y" => y,
-        "xx" => xx,
-        "yy" => yy
+        "state" => n.state.to_s
       }
     end
     return gen.to_json
@@ -56,15 +43,12 @@ class TimeServer
     @wizards.push(new_wiz)
 # DONE: can we dynamically add a PUT/POST callback here? with a unique url? that'd be cool..
     DCell::Node[DCell.me.id][:reel].wizard_route_for(new_wiz)
+    true
   end
 
   def rm_wizard(wiz)
     @wizards.reject! { |w| w["response_uuid"] == wiz["response_uuid"] }
-  end
-
-  # Accepts an Array of payload script names
-  def set_payload_list(list)
-    @payload_list = list
+    true
   end
 
   # frames per second throttle.. this refreshes the node list + renders the json
@@ -112,13 +96,14 @@ class WebServer < Reel::Server
 
   def on_connection(connection)
     while request = connection.request
-      case request
-      when Reel::Request
+      if request.websocket?
+        info "Received a WebSocket connection"
+        connection.detach
+        route_websocket request.websocket
+        break
+      else
         info "request for #{request.url}"
         route_request connection, request
-      when Reel::WebSocket
-        info "Received a WebSocket connection"
-        route_websocket request
       end
     end
   end
@@ -127,6 +112,7 @@ class WebServer < Reel::Server
   def wizard_route_for(new_wiz)
     puts "received new wizard_route_for #{new_wiz['response_uuid']}"
     @wizards.push(new_wiz)
+    true
   end
 
   def wizard_urls
@@ -148,13 +134,14 @@ class WebServer < Reel::Server
     #DCell::Node[this_wiz[:from_id]][:ping].wizard_response(this_wiz)
     # this should just display the response in create_image_wizard (or anything implementing ping)
     puts "serving up a wizard callback"
-    this_wiz["response"] = request.body
-    DCell::Node[this_wiz["from_id"]][:ping].async.wizard_complete(DCell.me.id, this_wiz["response_uuid"], this_wiz["response"])
-    DCell::Node[DCell.me.id][:time_server].async.rm_wizard(this_wiz)
+    this_wiz["response"] = request.body.to_s
+    DCell::Node[this_wiz["from_id"]][:ping].wizard_complete(DCell.me.id.to_s, this_wiz["response_uuid"], this_wiz["response"])
+    DCell::Node[DCell.me.id][:time_server].rm_wizard(this_wiz)
     @wizards.reject! { |w| w["response_uuid"] == this_wiz["response_uuid"] }
     #thanks = Reel::Response.new(200, { "Content-Location" => "/", "Location" => "/" }, "thanks here is some text response to quench your jquery thirst for datas")
     thanks = Reel::Response.new(:ok, "thanks here is some text response to quench your jquery thirst for datas")
     connection.respond(thanks)
+    true
   end
 
   def route_request(connection, request)
@@ -213,7 +200,7 @@ end
 config_file = @trollop_options[:config] || "config.yml"
 config = Clustersense::config(config_file)
 
-DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
+DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "zk", "servers" => [config["registry_host"]], "port" => 2181}
 
 host = "127.0.0.1"
 port = "1234"
@@ -232,4 +219,5 @@ TimeServer.supervise_as :time_server
 # This controls the world refresh rate
 DCell::Node[config["node_id"]][:time_server].set_resolution(1)
 
-#^^^ the slash in response_uuid might be important
+#require 'dcell/explorer'
+#DCell::Explorer.supervise("127.0.0.1", 1235)

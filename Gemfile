@@ -6,6 +6,8 @@ gem 'celluloid-zmq', :git => 'git://github.com/celluloid/celluloid-zmq'
 gem 'dcell',         :git => 'git://github.com/celluloid/dcell'
 gem 'reel',          :git => 'git://github.com/celluloid/reel'
 
+gem 'zk'
+
 gem 'ffi-rzmq', :git => 'git://github.com/chuckremes/ffi-rzmq.git'
 
 gem 'jruby-openssl', :platform => :jruby

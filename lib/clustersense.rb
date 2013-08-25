@@ -1,6 +1,7 @@
 require 'clustersense/version'
 require 'celluloid/autostart'
 require 'dcell'
+require 'dcell/registries/zk_adapter'
 require 'trollop'
 require 'highline'
 require 'highline/import'

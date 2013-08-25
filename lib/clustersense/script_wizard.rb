@@ -28,7 +28,7 @@ class AwsMenus
   end
 
   def main_menu()
-    question = "Run Scripts!"
+    question = "Execute on APP servers."
     scripts_menu_choices = {
       "Execute a script on all app servers" => 
           ->(response){ scripts_menu("app1") },
@@ -40,18 +40,20 @@ class AwsMenus
 
   def scripts_menu(node_id)
     script_payloads_dir = File.join(Clustersense::config_dir, "..", "script_payloads")
-    available_scripts = Dir.glob(File.join(script_payloads_dir, "*"))
+    available_scripts = Dir.glob(File.join(script_payloads_dir, "*")).collect {|c| File.basename(c)}
     choices("Pick a script from your war chest.", available_scripts) do |choice|
-      userlog "*** Executing #{choice} ***"
+      userlog "*** Preparing to execute#{choice} ***"
       all_app_nodes = DCell::Node.all.select do |n| 
         n.id =~ /^app/ 
       end
-      all_app_nodes_awake = all_app_nodes.select { |n| n.state.to_s == "connected" }
-      all_apps = all_app_nodes_awake.collect { |c| c.id }
-      agree("Are you SURE you want to run #{choice} on #{all_apps.join(",")}") do |answer|
+      #all_app_nodes.each do |n|
+      #  n[:basic].async.available
+      #end
+      all_apps = all_app_nodes.collect { |c| c.id }
+      agree("Are you SURE you want to execute:<br> <b>#{choice}</b> on #{all_apps.size} APP servers: #{all_apps.join(",")}") do |answer|
         if answer =~ /yes/
           all_apps.each do |app_server|
-            if DCell::Node[app_server][:basic].exec(DCell.me.id.to_s, ::IO.read(choice).to_s)
+            if DCell::Node[app_server][:basic].exec(DCell.me.id.to_s, ::IO.read(File.join(script_payloads_dir,choice)).to_s)
               userlog "#{app_server}: Execution completed successfully." 
             else
               userlog "#{app_server}: Execution failed!"
@@ -62,14 +64,14 @@ class AwsMenus
         end
       end 
 # back to imaging
-      main_menu
+    main_menu
     end 
   end
 end
 
 config_file = @trollop_options[:config]
 config = Clustersense::config(config_file)
-DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "redis", "host" => config["registry_host"], "port" => 6379 }
+DCell.start :id => config["node_id"], :addr => "tcp://#{config["node_ip"]}:#{config["port"]}", "registry" => { "adapter" => "zk", "servers" => [config["registry_host"]], "port" => 2181 }
 
 AwsMenus.supervise_as :ping
 
