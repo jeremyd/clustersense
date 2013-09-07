@@ -1,22 +1,21 @@
-#!/usr/bin/ruby
-# -jruby: , 1.7.3 has problems, also has no stderr support for IO.popen-
+#!/usr/bin/env ruby
+# ^^^ env shebang is development purposes only
+# linux packages will use Ruby 2_0_0 stable
 #!/usr/bin/jruby
+# ^^^ -jruby: , 1.7.3 has problems, also has no stderr support for IO.popen-
 
 # if running direct from checkout load the local clustersense libs first
-#locallib = File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
-#$LOAD_PATH.unshift locallib if File.exists? locallib
-require 'pry'
-
 vendorlib = File.expand_path(File.join(File.dirname(File.realpath(__FILE__)), "..", "bundle", "bundler", "setup.rb"))
-hardvendor = "/usr/lib/clustersense-git/bundle/bundler/setup.rb"
-puts "vendorlib was #{vendorlib}"
+# linux packages use a 'hardvendor' directory
+hardvendor = "/var/lib/clustersense/bundle/bundler/setup.rb"
 if File.exists?(vendorlib)
+  puts "vendorlib is #{hardvendor};"
   require vendorlib
 elsif File.exists?(hardvendor)
-  puts "luckily we have a hardcoded vendor directory for archlinux #{hardvendor}, requiring."
+  puts "vendorlib is #{hardvendor};"
   require hardvendor
 else
-  puts "FATAL: you must run bundle install --standalone; or could not find the vendor directory #{vendorlib}"
+  puts "FATAL: you must run bundle install --standalone; or could not find the vendor directory #{vendorlib} || #{hardvendor}"
   exit 1
 end
 
