@@ -1,5 +1,5 @@
 require 'clustersense'
-require 'clustersense/helpers/wizards'
+require 'clustersense/wizards'
 
 class AwsMenus
   include Wizards

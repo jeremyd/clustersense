@@ -24,13 +24,13 @@ require 'clustersense'
 @trollop_options = {}
 
 @trollop_options[:config] = "test/app1.yaml"
-require 'clustersense/basic'
+require 'clustersense/agents/basic/basic'
 
 @trollop_options[:config] = "test/reelweb.yaml"
-require 'clustersense/reelweb'
+require 'clustersense/agents/reelweb/reelweb'
 
 @trollop_options[:config] = "test/script_wizard.yaml"
-require 'clustersense/script_wizard'
+require 'clustersense/agents/script_wizard/script_wizard'
 
 puts "agents started"
 puts "point your selenium and humans at http://localhost:1234 to visit. CTRL-C to quit."

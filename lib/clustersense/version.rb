@@ -1,15 +1,15 @@
 module Clustersense
   VERSION = "0.0.1"
-  AGENTS_DIR = File.expand_path(File.join(File.dirname(__FILE__)))
+  AGENTS_DIR = File.expand_path(File.join(File.dirname(__FILE__), "agents"))
   def self.config_dir
-    File.expand_path(File.join(AGENTS_DIR, "..", "..", "config"))
+    File.expand_path(File.join(AGENTS_DIR, "..", "..", "..", "config"))
   end
 
   def self.system_wide_conf
     "/etc/clustersense"
   end
 
-  def self.config(config_file = "config.yml")
+  def self.config(config_file = "config.yaml")
     localconf = File.join(self.config_dir, config_file)
     systemconf = File.join(self.system_wide_conf, config_file)
     if File.exists?(localconf)

@@ -24,17 +24,17 @@ require 'clustersense'
 @trollop_options = Trollop::options do
   opt :list, "List available clustersense agents.", :default => false
   opt :agent, "Name of agent to startup.", :type => :string, :default => nil 
-  opt :config, "Name of config file.yml located *in the config directory. (relative name)", :type => :string, :default => nil 
+  opt :config, "Name of config file.yaml located *in the config directory. (relative name)", :type => :string, :default => nil 
 end
 
 if @trollop_options[:list]
 # do the list and exit
-  paths = Dir.glob("#{Clustersense::AGENTS_DIR}/**/*.rb")
-  strip_names = paths.collect do |path|
+  paths = Dir.glob("#{Clustersense::AGENTS_DIR}/*")
+  paths_dirs = paths.select { |s| File.directory?(s) }
+  strip_names = paths_dirs.collect do |path|
     p = File.basename(path)
-    p.gsub(/\.rb/,"")
   end
-  puts "The following clustersense are available:"
+  puts "*** The following clustersense agents are installed:"
   strip_names.reject! { |r| r == "version" }
   puts strip_names
   exit 0
@@ -45,7 +45,7 @@ end
 Trollop::die("--agent <name> must be specified!") unless @trollop_options[:agent]
 
 begin
-  require "clustersense/#{@trollop_options[:agent]}"
+  require "clustersense/agents/#{@trollop_options[:agent]}/#{@trollop_options[:agent]}"
 rescue => e
   puts e.backtrace if e.respond_to?(:backtrace)
   Trollop::die("Failed to load #{@trollop_options[:agent]} with error: #{e}")
