@@ -8,8 +8,6 @@ Gem::Specification.new do |s|
   s.bindir = "bin"
   s.files = Dir.glob("lib/**/*.rb") + \
     Dir.glob("test/**/*.rb") + \
-    Dir.glob("systemd/*") + \
-    Dir.glob("user-data/*") + \
     Dir.glob("config/config.yml.example")
   s.add_dependency("celluloid", ">=0.13.0")
   s.add_dependency("celluloid-zmq", ">=0.13.0")
