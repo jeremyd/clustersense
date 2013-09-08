@@ -17,8 +17,5 @@ Gem::Specification.new do |s|
   s.add_dependency("dcell", ">=0.13.0")
   s.add_dependency("reel", ">=0.0.2")
   s.add_dependency("ffi-rzmq", ">=0.9.7")
-  s.add_dependency("aws-sdk", ">=1.7.1")
   s.add_dependency("trollop", ">=2.0")
-  s.add_dependency("highline")
-  s.add_dependency("pry")
 end

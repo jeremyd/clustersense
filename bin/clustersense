@@ -9,7 +9,7 @@ vendorlib = File.expand_path(File.join(File.dirname(File.realpath(__FILE__)), ".
 # linux packages use a 'hardvendor' directory
 hardvendor = "/var/lib/clustersense/bundle/bundler/setup.rb"
 if File.exists?(vendorlib)
-  puts "vendorlib is #{hardvendor};"
+  puts "vendorlib is #{vendorlib};"
   require vendorlib
 elsif File.exists?(hardvendor)
   puts "vendorlib is #{hardvendor};"
@@ -22,8 +22,8 @@ end
 require 'clustersense'
 
 @trollop_options = Trollop::options do
-  opt :list, "List available clustersense.", :default => false
-  opt :agent, "Name of ami-agent to startup.", :type => :string, :default => nil 
+  opt :list, "List available clustersense agents.", :default => false
+  opt :agent, "Name of agent to startup.", :type => :string, :default => nil 
   opt :config, "Name of config file.yml located *in the config directory. (relative name)", :type => :string, :default => nil 
 end
 
@@ -34,7 +34,7 @@ if @trollop_options[:list]
     p = File.basename(path)
     p.gsub(/\.rb/,"")
   end
-  say "The following clustersense are available:"
+  puts "The following clustersense are available:"
   strip_names.reject! { |r| r == "version" }
   puts strip_names
   exit 0
@@ -51,5 +51,5 @@ rescue => e
   Trollop::die("Failed to load #{@trollop_options[:agent]} with error: #{e}")
 end
 
-say "#{@trollop_options[:agent]} starting."
+puts "#{@trollop_options[:agent]} starting."
 sleep

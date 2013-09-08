@@ -151,9 +151,6 @@ class WebServer < Reel::Server
     if request.url == "/clustersense.js"
       return render_ami_agents_js(connection)
     end
-    if request.url =~ /\/sprites\/(.+)/
-      return render_sprite(connection, $1)
-    end
     if request.url =~ /\/(css\/.+)/ || request.url =~ /\/(js\/.+)/ || request.url =~ /\/(img\/.+)/
       return render_static_asset(connection, $1)
     end
@@ -180,10 +177,6 @@ class WebServer < Reel::Server
       info "Received invalid WebSocket request for: #{socket.url}"
       socket.close
     end
-  end
-
-  def render_sprite(connection, spritename)
-    connection.respond(:ok, File.read(File.join(Clustersense::config_dir, "..", "sprites", spritename)))
   end
 
   def render_ami_agents_js(connection)

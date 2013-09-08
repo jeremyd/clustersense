@@ -91,7 +91,7 @@ EOF
   end
 
   def cycle
-    say "Cycling connection to homebase OpenVPN network"
+    puts "Cycling connection to homebase OpenVPN network"
     puts `sudo systemctl restart openvpn@client 2>&1`
     sleep 5
   end

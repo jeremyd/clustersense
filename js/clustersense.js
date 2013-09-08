@@ -16,7 +16,7 @@ var updown = 0;
 var counter = 0;
 
 var tuximg = new Image();
-tuximg.src = "/sprites/liltux.png";
+tuximg.src = "/img/liltux.png";
 
 function animate() {
   if(updown == 0) {

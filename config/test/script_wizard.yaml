@@ -1,0 +1,5 @@
+node_id: scripts_wizard
+reelweb_ip: 0.0.0.0
+node_ip: 127.0.0.1
+port: '4003'
+registry_host: 127.0.0.1

@@ -1,5 +1,0 @@
-node_id: create_image
-node_ip: 127.0.0.1
-port: '4006'
-registry_host: 127.0.0.1
-homebase_region: us-east-1
