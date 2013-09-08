@@ -9,24 +9,6 @@ class AwsMenus
     @agreements ||= {}
   end
 
- # Example of how to use menuing api
- # move this to a test?
-  def imaging_menu_sample
-    agree("You don't need to GO to cluster sense, cluster sense comes to you.") do |result|
-      if result =~ /yes/
-        choices("hi world", ["you", "said", "yes", "red", "blue", "too"]) do |other_result| 
-          userlog other_result 
-          if other_result =~ /blue/
-            agree("YOU GOT LUCKY?! YOU PICKED BLUE?! , right?") {|result| userlog result }
-          end
-        end
-      else
-        userlog "NO"
-        agree("you said no, agreed?") { |other_response| userlog other_response }
-      end
-    end
-  end
-
   def main_menu()
     question = "Execute on APP servers."
     scripts_menu_choices = {
@@ -46,9 +28,6 @@ class AwsMenus
       all_app_nodes = DCell::Node.all.select do |n| 
         n.id =~ /^app/ 
       end
-      #all_app_nodes.each do |n|
-      #  n[:basic].async.available
-      #end
       all_apps = all_app_nodes.collect { |c| c.id }
       agree("Are you SURE you want to execute:<br> <b>#{choice}</b> on #{all_apps.size} APP servers: #{all_apps.join(",")}") do |answer|
         if answer =~ /yes/
