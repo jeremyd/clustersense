@@ -1,0 +1,104 @@
+GIT
+  remote: git://github.com/celluloid/celluloid
+  revision: 02e3882c1e5519bb21b0a9ea19c7fa675cb696bd
+  specs:
+    celluloid (0.15.0)
+      timers (~> 1.1.0)
+
+GIT
+  remote: git://github.com/celluloid/celluloid-io
+  revision: 5dc88b3e1c6920aec44275f422b0d478b10120be
+  specs:
+    celluloid-io (0.15.0)
+      celluloid (>= 0.15.0)
+      nio4r (>= 0.5.0)
+
+GIT
+  remote: git://github.com/celluloid/celluloid-zmq
+  revision: c1521ab0bc63e4a4fffa9c35c8799734f70c722a
+  specs:
+    celluloid-zmq (0.15.0)
+      celluloid (>= 0.15.0)
+      ffi
+      ffi-rzmq
+
+GIT
+  remote: git://github.com/celluloid/dcell
+  revision: 21f384eab201bd8d9b32a431a018626187b10d41
+  specs:
+    dcell (0.15.0)
+      celluloid (>= 0.15.0)
+      celluloid-redis
+      celluloid-zmq (>= 0.15.0)
+      redis-namespace
+      reel
+
+GIT
+  remote: git://github.com/celluloid/reel
+  revision: d7c436e0b47b396c3d0c648532276f20dafc34df
+  specs:
+    reel (0.4.0.pre5)
+      celluloid (>= 0.15.0)
+      celluloid-io (>= 0.15.0)
+      http (>= 0.5.0.pre)
+      http_parser.rb (>= 0.6.0.beta.2)
+      websocket_parser (>= 0.1.4)
+
+GIT
+  remote: git://github.com/chuckremes/ffi-rzmq.git
+  revision: 4a6e45fdd7f9db7695c5d5e9771043f3c739ce6a
+  specs:
+    ffi-rzmq (1.0.1)
+      ffi
+
+PATH
+  remote: .
+  specs:
+    clustersense (0.0.1)
+      celluloid (>= 0.13.0)
+      celluloid-io (>= 0.13.0)
+      celluloid-zmq (>= 0.13.0)
+      dcell (>= 0.13.0)
+      ffi-rzmq (>= 0.9.7)
+      reel (>= 0.0.2)
+      trollop (>= 2.0)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    celluloid-redis (0.0.2)
+      celluloid-io (>= 0.13.0.pre)
+      redis
+    ffi (1.9.0)
+    http (0.5.0.pre)
+      http_parser.rb
+    http_parser.rb (0.6.0.beta.2)
+    little-plugger (1.1.3)
+    logging (1.7.2)
+      little-plugger (>= 1.1.3)
+    nio4r (0.5.0)
+    redis (3.0.4)
+    redis-namespace (1.3.1)
+      redis (~> 3.0.0)
+    timers (1.1.0)
+    trollop (2.0)
+    websocket_parser (0.1.4)
+      http
+    zk (1.9.0)
+      logging (~> 1.7.2)
+      zookeeper (~> 1.4.0)
+    zookeeper (1.4.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  celluloid!
+  celluloid-io!
+  celluloid-zmq!
+  clustersense!
+  dcell!
+  ffi-rzmq!
+  jruby-openssl
+  reel!
+  zk
