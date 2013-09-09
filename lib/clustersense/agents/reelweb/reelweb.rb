@@ -1,4 +1,5 @@
 require 'reel'
+require 'clustersense/agents'
 
 class TimeServer
   include Celluloid

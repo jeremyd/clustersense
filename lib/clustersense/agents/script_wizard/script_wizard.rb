@@ -1,4 +1,4 @@
-require 'clustersense'
+require 'clustersense/agents'
 require 'clustersense/wizards'
 
 class AwsMenus

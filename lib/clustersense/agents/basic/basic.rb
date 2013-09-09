@@ -1,4 +1,5 @@
 require 'time'
+require 'clustersense/agents'
 
 class Basic
   attr_accessor :config_file

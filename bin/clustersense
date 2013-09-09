@@ -23,6 +23,7 @@ require 'clustersense'
 
 @trollop_options = Trollop::options do
   opt :list, "List available clustersense agents.", :default => false
+  opt :enable, "Enable running of agent on startup", :default => false
   opt :agent, "Name of agent to startup.", :type => :string, :default => nil 
   opt :config, "Name of config file.yaml located *in the config directory. (relative name)", :type => :string, :default => nil 
 end
@@ -43,6 +44,12 @@ end
 @config_file = @trollop_options[:config] || "config.yml"
 
 Trollop::die("--agent <name> must be specified!") unless @trollop_options[:agent]
+
+if @trollop_options[:enable]
+  require 'clustersense/startup'
+  Upstart.enable(@trollop_options[:agent], @config_file)
+  exit(0)
+end
 
 begin
   require "clustersense/agents/#{@trollop_options[:agent]}/#{@trollop_options[:agent]}"
