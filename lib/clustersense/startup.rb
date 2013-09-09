@@ -4,8 +4,11 @@ class Upstart
 #!upstart
 description "Clustersense Agent Startup"
 
-start on [12345]
-stop on [!12345]
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+respawn limit 10 5
 
 console log
 
