@@ -7,7 +7,7 @@ module Wizards
 
   def userlog(message)
     puts message
-    DCell::Node["reelweb"][:time_server].async.ping(DCell.me.id.to_s, message)
+    #DCell::Node["reelweb"][:time_server].async.ping(DCell.me.id.to_s, message)
     true
   end
  
