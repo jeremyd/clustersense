@@ -1,0 +1,4 @@
+node_id: knife_openstack_jenkins
+node_ip: 127.0.0.1
+port: '4019'
+registry_host: 127.0.0.1

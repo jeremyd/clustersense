@@ -29,31 +29,14 @@ class Basic
       DCell::Node[cell][actor].async.ping(DCell.me.id, message)
       return true
     else
+      puts "could not ping"
       return false
     end
   end
 
-  # Receives a git repository with new code? Or just some files? Or a gem?
-  def infect(new_code)
-    result = ""
-    # TODO: do a self update and restart ..
-    # 1) install the payload somewhere (gems?)
-    #tmpgem = File.join(Dir.tmpdir, "clustersense-0.0.1.gem") 
-    #exec("curl -o #{tmpgem} #{new_code}")
-    #exec("mkdir -p /etc/clustersense")
-    #exec("cp /usr/lib/ruby/gems/1.9.1/gems/clustersense-0.0.1/config/config.yml /etc/clustersense/config.yml")
-    #exec("gem install #{tmpgem} --no-user")
-    #exec("cp /etc/clustersense/config.yml /usr/lib/ruby/gems/1.9.1/gems/clustersense-0.0.1/config/config.yml")
-    #exec("systemctl restart clustersense")
-    #exit(0)
-    # 2) engineer new dcell service via systemd, and start it.
-    # 3) dispatch checks the new cell is online
-    # 4) shutdown old cell
-  end
-
   # This method accepts any script payload with a shebang line.
   # Also accepts optional environment hash that will be turned into local environment variables for the script to access.
-  def exec(sender_id, script, environment = {})
+  def exec(sender_id, script, environment = {}, job_id=`uuidgen`.strip)
     @cache_path ||= File.join(Clustersense::config_dir, "..", "exec")
     FileUtils.mkdir_p(@cache_path)
     datetimestring = Time.now.strftime("%Y%m%d-%H%M-%L")
@@ -90,7 +73,14 @@ class Basic
       success_status = "Failed!!"
     end
     ping_someone(sender_id, :ping, success_status)
+    job_complete(sender_id, :ping, job_id)
     return $?.success?
+  end
+
+  def job_complete(cell, actor, job_id)
+    if DCell::Node[cell] && DCell::Node[cell][actor]
+      DCell::Node[cell][actor].async.job_complete(DCell.me.id, job_id)
+    end
   end
 end
 
