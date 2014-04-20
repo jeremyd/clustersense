@@ -49,7 +49,7 @@ class Basic
 
     File.open(tmp_script_path, "w") { |f| f.write(script) }
     FileUtils.chmod(0755, tmp_script_path)
-    onebigout = ""
+
     ::IO.popen([tmp_script_path, :err=>[:child, :out]], "r+") do |io|
       while(1) do
         begin
@@ -67,19 +67,21 @@ class Basic
         ping_someone(sender_id, :ping, output) if output
       end
     end
+
     if $?.success?
       success_status = "Success!!"
     else
       success_status = "Failed!!"
     end
     ping_someone(sender_id, :ping, success_status)
-    job_complete(sender_id, :ping, job_id)
-    return $?.success?
+
+    job_complete(sender_id, :ping, job_id, $?.success?)
+    true
   end
 
-  def job_complete(cell, actor, job_id)
+  def job_complete(cell, actor, job_id, status)
     if DCell::Node[cell] && DCell::Node[cell][actor]
-      DCell::Node[cell][actor].async.job_complete(DCell.me.id, job_id)
+      DCell::Node[cell][actor].async.job_complete(DCell.me.id, job_id, status)
     end
   end
 end

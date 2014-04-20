@@ -1,13 +1,14 @@
 module Wizards
   # CALLBACKS
   def ping(sender_id, message)
-    puts("#{message} from #{sender_id}")
     userlog("#{sender_id}: #{message}")
   end
 
   def userlog(message)
     puts message
-    DCell::Node["reelweb"][:time_server].async.ping(DCell.me.id.to_s, message)
+    if DCell::Node["reelweb"] && DCell::Node["reelweb"][:time_server]
+      DCell::Node["reelweb"][:time_server].async.ping(DCell.me.id.to_s, message)
+    end
     true
   end
  

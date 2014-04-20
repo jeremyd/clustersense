@@ -84,6 +84,7 @@ class TimeClient
   end
 end
 
+#class WebServer < Reel::Server::HTTP
 class WebServer < Reel::Server
   include Celluloid::Logger
 
@@ -101,7 +102,7 @@ class WebServer < Reel::Server
         info "Received a WebSocket connection"
         connection.detach
         route_websocket request.websocket
-        break
+        return
       else
         info "request for #{request.url}"
         route_request connection, request

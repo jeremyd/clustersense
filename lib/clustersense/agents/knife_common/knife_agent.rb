@@ -33,14 +33,24 @@ module KnifeAgent
         fi
       done
 EOF
-    DCell::Node[node][:basic].exec(DCell.me.id, payload)
+    DCell::Node[node][:basic].exec(DCell.me.id, payload, {}, track_job)
+    true
   end
 
   def track_job
-    @job_tracker ||= []
-    this_job = `uuidgen`.strip
-    @job_tracker << this_job
-    this_job
+    @job_tracker ||= {}
+    this_id = `uuidgen`.strip
+    @job_tracker[this_id] = { 'running' => true, 'exitstatus' => nil }
+    this_id
+  end
+
+  def check_jobs_complete
+    still_running = []
+    @job_tracker.keys.each do |key|
+      still_running << key if @job_tracker[key]['running']
+    end
+    return true if still_running.size == 0
+    return false
   end
 
   def run_chef(cookbook_name, node="app2")
@@ -79,12 +89,21 @@ EOF
 EOF
       DCell::Node[node][:basic].async.exec(DCell.me.id, payload, {}, track_job)
     end
-    true
   end
 
-  def job_complete(sender_id, job_id)
-    userlog "JOB_ID: #{job_id} complete"
-    @job_tracker.reject! { |r| r == job_id } 
+  def all_successful?
+    all_success = true
+    @job_tracker.keys.each do |key|
+      all_success = false if @job_tracker[key]['exitstatus'] == false
+    end
+    all_success
+  end
+
+  def job_complete(sender_id, job_id, status)
+    userlog "JOB COMPLETE: #{job_id}, Exitstatus: #{status}"
+    @job_tracker[job_id]['exitstatus'] = status
+    @job_tracker[job_id]['running'] = false
+    status
   end
 
   def launch_generic(cookbook_name, cluster_size=1, node="app2")
@@ -112,6 +131,7 @@ EOF
     else
       launch_generic(cookbook_name, cluster_size, node)
     end
+    true
   end
 
   def berks_refresh(cookbook_name, node="app2")
@@ -125,7 +145,7 @@ EOF
       #berks upload #{cookbook_name} --force
       berks upload --force
 EOF
-    DCell::Node[node][:basic].exec(DCell.me.id, payload)
+    DCell::Node[node][:basic].exec(DCell.me.id, payload, {}, track_job)
   end
 
   def berks_install(cookbook_name, node="app2")
@@ -136,7 +156,7 @@ EOF
       cd #{working_dir}
       berks install
 EOF
-    DCell::Node[node][:basic].exec(DCell.me.id, payload)
+    DCell::Node[node][:basic].exec(DCell.me.id, payload, {}, track_job)
     main_menu
   end
 
@@ -148,7 +168,7 @@ EOF
       cd #{working_dir}
       berks update
 EOF
-    DCell::Node[node][:basic].exec(DCell.me.id, payload)
+    DCell::Node[node][:basic].exec(DCell.me.id, payload, {}, track_job)
   end
 
   def berks_upload(cookbook_name, node="app2")
@@ -160,6 +180,6 @@ EOF
       #berks upload #{cookbook_name} --force
       berks upload --force
 EOF
-    DCell::Node[node][:basic].exec(DCell.me.id, payload)
+    DCell::Node[node][:basic].exec(DCell.me.id, payload, {}, track_job)
   end
 end

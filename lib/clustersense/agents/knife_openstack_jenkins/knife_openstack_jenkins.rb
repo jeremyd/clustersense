@@ -4,9 +4,9 @@ require 'clustersense/agents/knife_common/knife_agent'
 require 'json'
 
 class KnifeOpenstackJenkins
+  include Wizards
   include Celluloid
   include KnifeAgent
-  include Wizards
 
   # environmental inputs:
   # ACTION
@@ -17,7 +17,7 @@ class KnifeOpenstackJenkins
   # needs to:
   # launch_cluster, berks refresh+merge environments, cleanup, run_chef
   def initialize
-    @job_tracker ||= []
+    @job_tracker ||= {}
   end
 
   #MAIN
@@ -37,6 +37,11 @@ class KnifeOpenstackJenkins
       exit 1
     end
 
+    unless ENV['CLUSTER_SIZE']
+      userlog "Using $CLUSTER_SIZE=3 (default)."
+      ENV['CLUSTER_SIZE'] = "3"
+    end
+
     @cluster_name = "#{ENV['COOKBOOK_NAME']}-#{ENV['MYTAG']}-0"
 
     case ENV['ACTION']
@@ -44,7 +49,7 @@ class KnifeOpenstackJenkins
         userlog "Aborting. The environment variable $ACTION must be set."
         exit 1
       when "launch_cluster"
-        launch_cluster(ENV['COOKBOOK_NAME'])
+        launch_cluster(ENV['COOKBOOK_NAME'], ENV['CLUSTER_SIZE'].to_i)
       when "berks_refresh"
         berks_refresh(ENV['COOKBOOK_NAME'])
         write_environment
@@ -53,13 +58,19 @@ class KnifeOpenstackJenkins
       when "cleanup"
         delete_if_exists(@cluster_name)
     end
+
 # wait for jobs to finish
-    after(5) do
+    after(1) do
       every(1) do
-        userlog "RUNNING JOBS: #{@job_tracker.inspect}"
-        if @job_tracker.size == 0
-          userlog "JOBS COMPLETE.  EXITING."
-          exit 0
+        if check_jobs_complete
+          userlog "ALL JOBS FINISHED. EXITING."
+          after(1) do 
+            if all_successful?
+              exit 0 
+            else
+              exit 1
+            end
+          end 
         end
       end
     end
@@ -77,7 +88,7 @@ class KnifeOpenstackJenkins
       echo knife environment from file #{target_env_file}
       knife environment from file #{target_env_file}
 EOF
-    DCell::Node[node][:basic].exec(DCell.me.id, payload)
+    DCell::Node[node][:basic].exec(DCell.me.id, payload, {}, track_job)
   end
 
   def ping(sender_id, message)
