@@ -1,11 +1,12 @@
 module Wizards
+  include Celluloid::Logger
   # CALLBACKS
   def ping(sender_id, message)
     userlog("#{sender_id}: #{message}")
   end
 
   def userlog(message)
-    puts message
+    info message
     if DCell::Node["reelweb"] && DCell::Node["reelweb"][:time_server]
       DCell::Node["reelweb"][:time_server].async.ping(DCell.me.id.to_s, message)
     end

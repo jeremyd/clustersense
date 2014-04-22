@@ -22,6 +22,16 @@ class KnifeOpenstackJenkins
 
   #MAIN
   def run_job
+    @ko_opts = {
+      'CLOUD_ENV' => ENV['CLOUD_ENV'],
+      'OS_TENANT_NAME' => ENV['OS_TENANT_NAME']
+    }
+
+    unless ENV['ENVIRONMENT']
+      userlog "Aborting. The environment variable $ENVIRONMENT must be set."
+      exit 1
+    end
+
     unless ENV['COOKBOOK_DIR']
       userlog "Aborting. The environment variable $COOKBOOK_DIR must be set."
       exit 1
@@ -76,23 +86,23 @@ class KnifeOpenstackJenkins
     end
   end
 
+# TODO infuse environment
   def write_environment(node="app2")
     cookbook_path = File.join(ENV['COOKBOOK_DIR'], ENV['COOKBOOK_NAME'])
     target_env_file = File.join(cookbook_path, "environments", "mytag.json")
     modified_name = "#{ENV['COOKBOOK_NAME']}-#{ENV['MYTAG']}"
-    modified_env = mod_environment(cookbook_path, "stage.json", modified_name)
+    modified_env = mod_environment(cookbook_path, "#{ENV['ENVIRONMENT']}.json", modified_name)
     ::IO.write(target_env_file, modified_env)
     # perform the upload
     payload =<<EOF
-      #!/bin/bash -e --login
-      echo knife environment from file #{target_env_file}
-      knife environment from file #{target_env_file}
+      #!/bin/bash -e
+      echo #{knife_bin} environment from file #{target_env_file}
+      #{knife_bin} environment from file #{target_env_file}
 EOF
-    DCell::Node[node][:basic].exec(DCell.me.id, payload, {}, track_job)
+    DCell::Node[node][:basic].exec(DCell.me.id, payload, @ko_opts, track_job)
   end
 
   def ping(sender_id, message)
-    puts("#{message} from #{sender_id}")
     userlog("#{sender_id}: #{message}")
   end
 

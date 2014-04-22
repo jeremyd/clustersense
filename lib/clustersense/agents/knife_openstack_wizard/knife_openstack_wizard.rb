@@ -147,8 +147,8 @@ class AwsMenus
 # perform the upload
       payload =<<EOF
         #!/bin/bash -e --login
-        echo knife environment from file #{target_env_file}
-        knife environment from file #{target_env_file}
+        echo #{knife_bin} environment from file #{target_env_file}
+        #{knife_bin} environment from file #{target_env_file}
 EOF
       after(3) { DCell::Node[node][:basic].exec(DCell.me.id, payload) }
     end
@@ -159,12 +159,6 @@ EOF
     # Uhh, can't use knife openstack here duh, cause that needs a chef server (CHICKEN MEET EGG)
     #knife openstack image list |grep -i chef-server-11|cut -f1 -d " "
     image_id = "bec9d5ba-d61b-4e67-9dd5-2134e758ede9" # os0 chef-server-11 
-    my_chef = "chef-server-11-#{ENV['mytag']}"
-    tenant_name = "stage"
-    payload =<<EOF 
-        #knife openstack server create --environment #{environment_name} -f 2 -I #{image_id} --node-name #{my_chef} -S #{tenant_name} -i ~/stage.pem --no-host-key-verify -x ubuntu --nics '[{ \"net_id\": \"df18aba9-7daf-41fe-bb2a-82c586a686fc\" }]' --bootstrap-network vlan2020
-EOF
-    DCell::Node[node][:basic].async.exec(DCell.me.id, payload)
   end
 
   def run_chef_menu
