@@ -1,3 +1,4 @@
+#!/var/lib/clustersense/rubies/ruby-2.0.0/bin/ruby
 #!/usr/bin/env ruby
 # ^^^ env shebang is development purposes only
 # linux packages will use Ruby 2_0_0 stable

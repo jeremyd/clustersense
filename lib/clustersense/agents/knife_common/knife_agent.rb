@@ -12,6 +12,10 @@ module KnifeAgent
     "/var/lib/clustersense/rubies/ruby-2.0.0/bin/knife"
   end
 
+  def berks_bin
+    "/var/lib/clustersense/rubies/ruby-2.0.0/bin/berks"
+  end
+
   def delete_if_exists(name, node="app2")
     payload =<<EOF 
 #!/bin/bash -x 
@@ -63,7 +67,7 @@ EOF
     userlog("**cluster_name is #{cluster_name}")
     payload =<<EOF 
 #!/bin/bash -e
-      #{knife_bin} ssh "name:#{cluster_name}*" "sudo chef-client --environment #{environment_name}" -i /home/ubuntu/workspace/chef/.chef/p_and_i.pem -a ipaddress --no-host-key-verify -x ubuntu
+      #{knife_bin} ssh "name:#{cluster_name}*" "sudo chef-client --environment #{environment_name}" -i ~/.chef/p_and_i.pem -a ipaddress --no-host-key-verify -x ubuntu
 EOF
     DCell::Node[node][:basic].async.exec(DCell.me.id, payload, @ko_opts, track_job)
     true
@@ -90,7 +94,7 @@ EOF
       end
       payload =<<EOF
 #!/bin/bash -e
-        #{knife_bin} openstack server create --environment #{environment_name} -f 2 -I #{image_id} --node-name #{cluster_name}-#{cid} -S #{tenant_name} -i /home/ubuntu/workspace/chef/.chef/p_and_i.pem --no-host-key-verify -r \"#{runlist}\" -x ubuntu --nics '[{ \"net_id\": \"df18aba9-7daf-41fe-bb2a-82c586a686fc\" }]' --bootstrap-network vlan2020 --user-data ~/user-data/staging_users.cloud_config
+        #{knife_bin} openstack server create --environment #{environment_name} -f 2 -I #{image_id} --node-name #{cluster_name}-#{cid} -S #{tenant_name} -i ~/.chef/p_and_i.pem --no-host-key-verify -r \"#{runlist}\" -x ubuntu --nics '[{ \"net_id\": \"df18aba9-7daf-41fe-bb2a-82c586a686fc\" }]' --bootstrap-network vlan2020 --user-data ~/user-data/staging_users.cloud_config
 EOF
       DCell::Node[node][:basic].async.exec(DCell.me.id, payload, @ko_opts, track_job)
     end
@@ -105,9 +109,11 @@ EOF
   end
 
   def job_complete(sender_id, job_id, status)
-    userlog "JOB COMPLETE: #{job_id}, Exitstatus: #{status}"
-    @job_tracker[job_id]['exitstatus'] = status
-    @job_tracker[job_id]['running'] = false
+    after(1) {
+      userlog "JOB COMPLETE: #{job_id}, Exitstatus: #{status}"
+      @job_tracker[job_id]['exitstatus'] = status
+      @job_tracker[job_id]['running'] = false
+    }
     status
   end
 
@@ -124,7 +130,7 @@ EOF
     cluster_size.times do |cid|
       payload =<<EOF 
 #!/bin/bash -e
-        #{knife_bin} openstack server create --environment #{environment_name} -f 2 -I #{image_id} --node-name #{cluster_name}-#{cid} -S #{tenant_name} -i /home/ubuntu/workspace/chef/.chef/p_and_i.pem --no-host-key-verify -r \"recipe[#{cookbook_name}::deploy]\" -x ubuntu --nics '[{ \"net_id\": \"df18aba9-7daf-41fe-bb2a-82c586a686fc\" }]' --bootstrap-network vlan2020
+        #{knife_bin} openstack server create --environment #{environment_name} -f 2 -I #{image_id} --node-name #{cluster_name}-#{cid} -S #{tenant_name} -i ~/.chef/p_and_i.pem --no-host-key-verify -r \"recipe[#{cookbook_name}::deploy]\" -x ubuntu --nics '[{ \"net_id\": \"df18aba9-7daf-41fe-bb2a-82c586a686fc\" }]' --bootstrap-network vlan2020
 EOF
       DCell::Node[node][:basic].async.exec(DCell.me.id, payload, @ko_opts, track_job)
     end
@@ -146,10 +152,9 @@ EOF
 #!/bin/bash -e
       echo "changing dir to #{working_dir}"
       cd #{working_dir}
-      berks install
-      berks update
-      #berks upload #{cookbook_name} --force
-      berks upload --force
+      #{berks_bin} install
+      #{berks_bin} update
+      #{berks_bin} upload --force
 EOF
     DCell::Node[node][:basic].exec(DCell.me.id, payload, @ko_opts, track_job)
   end
@@ -160,7 +165,7 @@ EOF
 #!/bin/bash -e
       echo "changing dir to #{working_dir}"
       cd #{working_dir}
-      berks install
+      #{berks_bin} install
 EOF
     DCell::Node[node][:basic].exec(DCell.me.id, payload, @ko_opts, track_job)
     main_menu
@@ -172,7 +177,7 @@ EOF
 #!/bin/bash -e
       echo "changing dir to #{working_dir}"
       cd #{working_dir}
-      berks update
+      #{berks_bin} update
 EOF
     DCell::Node[node][:basic].exec(DCell.me.id, payload, @ko_opts, track_job)
   end
@@ -183,8 +188,7 @@ EOF
 #!/bin/bash -e
       echo "changing dir to #{working_dir}"
       cd #{working_dir}
-      #berks upload #{cookbook_name} --force
-      berks upload --force
+      #{berks_bin} upload --force
 EOF
     DCell::Node[node][:basic].exec(DCell.me.id, payload, @ko_opts, track_job)
   end
